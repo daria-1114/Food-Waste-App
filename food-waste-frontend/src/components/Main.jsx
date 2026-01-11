@@ -134,25 +134,6 @@ if (!user || !user.id) {
 
   return (
     <Box p={4}>
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" mb={3} alignItems="center">
-  <Typography variant="h4">Welcome, {user.name}</Typography>
-  
-  <Box>
-    <Button 
-      variant="contained" 
-      color="secondary" 
-      onClick={goToLists} // This comes from props
-      sx={{ mr: 2 }}
-    >
-      My Lists
-    </Button>
-    <Button variant="outlined" onClick={onLogout}>
-      Logout
-    </Button>
-  </Box>
-</Box>
-
       <Grid container spacing={4}>
         {/* LEFT */}
         <Grid item xs={12} md={6}>

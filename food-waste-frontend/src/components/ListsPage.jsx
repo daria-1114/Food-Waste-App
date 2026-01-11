@@ -30,7 +30,7 @@ const ListsPage = ({ user, goBack }) => {
 
   return (
     <Box p={4} sx={{ backgroundColor: "#f4f6f8", minHeight: "100vh" }}>
-      <Button onClick={goBack} variant="text" sx={{ mb: 2 }}>← Back to Dashboard</Button>
+      
       
       <Typography variant="h3" gutterBottom sx={{ fontWeight: "bold" }}>
         My Food Lists

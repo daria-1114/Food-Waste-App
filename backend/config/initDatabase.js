@@ -11,10 +11,21 @@ async function initDB() {
     // relationships
     User.hasMany(FoodProduct, { foreignKey: "UserId" });
     FoodProduct.belongsTo(User, { foreignKey: "UserId" });
+   
+    User.belongsToMany(FriendGroup, { 
+  through: GroupMember, 
+  foreignKey: "UserId",  // Force this name
+  otherKey: "GroupId",   // Force this name
+  as: "groups" 
+});
 
-    User.belongsToMany(FriendGroup, { through: GroupMember, as:"groups" });
-    FriendGroup.belongsToMany(User, { through: GroupMember, as:"members" });
-
+FriendGroup.belongsToMany(User, { 
+  through: GroupMember, 
+  foreignKey: "GroupId", // Force this name
+  otherKey: "UserId",    // Force this name
+  as: "members",
+  onDelete: 'CASCADE'
+});
     // authenticate
     await db.authenticate();
     console.log("DB authenticated");

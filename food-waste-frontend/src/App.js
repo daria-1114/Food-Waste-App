@@ -2,13 +2,20 @@ import React, { useState } from "react";
 import Auth from "./components/Auth";
 import Main from "./components/Main";
 import ListsPage from "./components/ListsPage";
+import Navbar from "./components/Navbar";
+import GroupsPage from "./components/GroupsPage";
+import {Box} from "@mui/material"; 
 function App() {
-  // Load user from localStorage if exists
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem("user");
-    const token = localStorage.getItem("token");
-    return saved ? JSON.parse(saved) : null;
-  });
+ const [user, setUser] = useState(() => {
+  const savedUser = localStorage.getItem("user");
+  const token = localStorage.getItem("token");
+
+  // Only consider the user "logged in" if we have BOTH the user data AND the token
+  if (savedUser && token && token !== "undefined") {
+    return JSON.parse(savedUser);
+  }
+  return null;
+});
 
   const handleLogin = (data, token) => {
     localStorage.setItem("token", token);
@@ -30,18 +37,19 @@ function App() {
   }
   return (
   <>
-    {view === "dashboard" ? (
-      <Main 
-        user={user} 
-        onLogout={handleLogout} 
-        goToLists={() => setView("lists")} 
-      />
-    ) : (
-      <ListsPage 
-        user={user} 
-        goBack={() => setView("dashboard")} 
-      />
-    )}
+    {/* The Navbar is always here as long as a user is logged in */}
+    <Navbar 
+      setView={setView} 
+      onLogout={handleLogout} 
+      userName={user.name} 
+    />
+
+    <Box sx={{ mt: 2 }}>
+      {view === "dashboard" && <Main user={user} />}
+      {view === "lists" && <ListsPage user={user} setView={setView} />}
+      {view === "groups" && <GroupsPage user={user} />}
+    </Box>
+  
   </>
 );
 }
