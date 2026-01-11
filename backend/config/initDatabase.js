@@ -9,8 +9,8 @@ import GroupMember from "../models/groupMember.js";
 async function initDB() {
   try {
     // relationships
-    User.hasMany(FoodProduct, { foreignKey: "userId" });
-    FoodProduct.belongsTo(User, { foreignKey: "userId" });
+    User.hasMany(FoodProduct, { foreignKey: "UserId" });
+    FoodProduct.belongsTo(User, { foreignKey: "UserId" });
 
     User.belongsToMany(FriendGroup, { through: GroupMember, as:"groups" });
     FriendGroup.belongsToMany(User, { through: GroupMember, as:"members" });
@@ -20,7 +20,7 @@ async function initDB() {
     console.log("DB authenticated");
 
     // sync
-    await db.sync({ alter: true });
+    await db.sync();
     console.log("DB synced");
 
   } catch (error) {

@@ -1,25 +1,49 @@
-import logo from './logo.svg';
-import './App.css';
-
+import React, { useState } from "react";
+import Auth from "./components/Auth";
+import Main from "./components/Main";
+import ListsPage from "./components/ListsPage";
 function App() {
+  // Load user from localStorage if exists
+  const [user, setUser] = useState(() => {
+    const saved = localStorage.getItem("user");
+    const token = localStorage.getItem("token");
+    return saved ? JSON.parse(saved) : null;
+  });
+
+  const handleLogin = (data, token) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(data));
+    setUser(data);
+  };
+
+  
+  const [view, setView] = useState("dashboard");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setUser(null);
+    setView("dashboard");
+  };
+
+  if (!user) {
+    return <Auth onLogin={handleLogin} />;
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+  <>
+    {view === "dashboard" ? (
+      <Main 
+        user={user} 
+        onLogout={handleLogout} 
+        goToLists={() => setView("lists")} 
+      />
+    ) : (
+      <ListsPage 
+        user={user} 
+        goBack={() => setView("dashboard")} 
+      />
+    )}
+  </>
+);
 }
 
 export default App;

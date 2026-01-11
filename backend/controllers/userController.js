@@ -1,36 +1,49 @@
 import User from "../models/user.js";
+import bcrypt from "bcrypt";
+import {signToken} from "../utils/jwt.js";
 
-export const createUser = async (req, res) => {
-  try {
-    const user = await User.create(req.body);
-    res.status(201).json(user);
-  } catch (error) {
-    res.status(400).json({
-      error: error.message
-    });
-  }
+
+export const register = async (req, res) => {
+  const { name, email, password } = req.body;
+
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  const user = await User.create({
+    name,
+    email,
+    password: hashedPassword,
+  });
+
+  const token = signToken(user);
+
+  return res.json({
+    token:token,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    }
+  });
 };
 
-export const getUser = async (req, res) => {
-  try {
-    const users = await User.findAll();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
-  }
-};
-export const getUserGroups = async (req,res)=>{
-  try{
-    const { userId} = req.params;
-    const user = await User.findByPk(userId);
-    if(!user)return res.status(404).json({error:"User not found"});
+export const login = async (req, res) => {
+  const email = req.body.email?.trim().toLowerCase();
+  const password = req.body.password;
 
-    const groups = await user.getGroups();
-    res.json(groups);
-  }
-  catch(error){
-    res.status(500).json({error:error.message});
-  }
-}
+  const user = await User.findOne({ where: { email } });
+  if (!user) return res.status(401).json({ error: "Invalid credentials" });
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) return res.status(401).json({ error: "Invalid credentials" });
+
+  const token = signToken(user);
+
+  res.json({
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+    },
+    token,
+  });
+};

@@ -9,7 +9,11 @@ import initDB from './config/initDatabase.js';
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin:"http://localhost:3000",
+  credentials:true,
+  allowedHeaders:['Content-type', 'Authorization']
+}));
 app.use(express.json());
 
 

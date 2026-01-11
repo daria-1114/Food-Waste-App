@@ -4,7 +4,7 @@ import { createGroup, addUserToGroup, getGroupMembers } from "../controllers/gro
 const router = express.Router();
 
 router.post("/", createGroup);
-router.post("/:groupId/users/:userId", addUserToGroup);
-router.get("/:groupId/users", getGroupMembers);
+router.post("/add-user", addUserToGroup);
+router.get("/:groupId/members", getGroupMembers);
 
 export default router;

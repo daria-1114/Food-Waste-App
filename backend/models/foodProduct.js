@@ -17,6 +17,17 @@ const Food = db.define("FoodProduct",{
     expiration:{
         type: DataTypes.DATE,
         allowNull:false,
+    },
+    available:{
+        type: DataTypes.BOOLEAN
+    },
+    shared:{
+        type: DataTypes.BOOLEAN,
+        defaultValue:false
+    },
+    UserId:{
+        type: DataTypes.INTEGER,
+        allowNull:false
     }
 });
 export default Food;

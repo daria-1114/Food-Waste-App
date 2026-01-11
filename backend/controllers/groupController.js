@@ -1,9 +1,10 @@
 import User from "../models/user.js";
-import Group from "../models/friendGroup.js";
+import FriendGroup from "../models/friendGroup.js";
 
 export const createGroup = async (req, res) => {
   try {
-    const group = await Group.create({ name: req.body.name });
+    const { name, label } = req.body;
+    const group = await FriendGroup.create({ name, label });
     res.status(201).json(group);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -12,18 +13,11 @@ export const createGroup = async (req, res) => {
 
 export const addUserToGroup = async (req, res) => {
   try {
-    const { groupId, userId } = req.params;
-
-    const group = await Group.findByPk(groupId,{
-        include: {model:User, as:"members"}
-    });
-    const user = await User.findByPk(userId,{
-        include: { model: Group, as: "groups" }
-    });
-
-    if (!group || !user) return res.status(404).json({ error: "User or Group not found" });
-
-    await group.addMember(user); // ✅ instance method
+    const { groupId, userId } = req.body;
+    const group = await FriendGroup.findByPk(groupId);
+    const user = await User.findByPk(userId);
+    if (!group || !user) return res.status(404).json({ error: "User or group not found" });
+    await group.addMember(user);
     res.json({ message: `User ${userId} added to group ${groupId}` });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -33,12 +27,9 @@ export const addUserToGroup = async (req, res) => {
 export const getGroupMembers = async (req, res) => {
   try {
     const { groupId } = req.params;
-    const group = await Group.findByPk(groupId);
-
+    const group = await FriendGroup.findByPk(groupId, { include: { model: User, as: "members" } });
     if (!group) return res.status(404).json({ error: "Group not found" });
-
-    const members = await group.getMembers(); // safer than include
-    res.json(members);
+    res.json(group.members);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
