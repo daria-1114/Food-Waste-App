@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import {
   Box,
   Typography,
@@ -63,20 +63,22 @@ const Main = ({ user, onLogout, goToLists }) => {
   }, [fetchFoods]);
 
  // 2. Expiry Alerts (Awareness Feature)
-  useEffect(() => {
-    const today = new Date().toDateString();
-    const lastAlert = localStorage.getItem("lastExpiryAlert");
+const hasAlertedThisSession = useRef(false); 
 
-    if (lastAlert !== today && foods.length > 0) {
-      const expiringItems = foods.filter(
-        (f) => getExpiryStatus(f.expiration) === "warning"
-      );
-      if (expiringItems.length > 0) {
-        alert(`📢 Awareness Alert: You have ${expiringItems.length} items expiring soon!`);
-        localStorage.setItem("lastExpiryAlert", today);
-      }
+useEffect(() => {
+  if (foods.length > 0 && !hasAlertedThisSession.current) {
+    const expiringItems = foods.filter(
+      (f) => getExpiryStatus(f.expiration) === "warning"
+    );
+
+    if (expiringItems.length > 0) {
+      alert(`📢 Awareness Alert: You have ${expiringItems.length} items expiring soon!`);
+      
+      // Mark as "done" so it doesn't fire again until the page is reloaded
+      hasAlertedThisSession.current = true; 
     }
-  }, [foods]);
+  }
+}, [foods]);
   /* ---------------- ADD ---------------- */
  const handleAddFood = async () => {
   if (!name || !category || !expiration) return;

@@ -10,7 +10,7 @@ async function initDB() {
   try {
     // relationships
     User.hasMany(FoodProduct, { foreignKey: "UserId" });
-    FoodProduct.belongsTo(User, { foreignKey: "UserId" });
+    FoodProduct.belongsTo(User, { foreignKey: "UserId", as:'owner' });
    
     User.belongsToMany(FriendGroup, { 
   through: GroupMember, 
@@ -26,6 +26,8 @@ FriendGroup.belongsToMany(User, {
   as: "members",
   onDelete: 'CASCADE'
 });
+
+FoodProduct.belongsTo(User, { foreignKey: "claimedBy", as: 'claimer' });
     // authenticate
     await db.authenticate();
     console.log("DB authenticated");

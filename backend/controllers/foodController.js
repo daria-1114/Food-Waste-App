@@ -124,3 +124,42 @@ export const deleteFood = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+export const toggleFoodShare = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { shared } = req.body; // Getting the true/false value from frontend
+
+    const food = await FoodProduct.findByPk(id);
+
+    if (!food) {
+      return res.status(404).json({ error: "Food item not found" });
+    }
+
+    // Update the 'shared' column
+    food.shared = shared;
+    await food.save();
+
+    res.json({ message: `Item is now ${shared ? 'shared' : 'private'}`, food });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+export const claimFood = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = req.user.id; // The person currently logged in
+
+    const food = await FoodProduct.findByPk(id);
+    if (!food) return res.status(404).json({ error: "Food not found" });
+    if (food.claimedBy) return res.status(400).json({ error: "Already claimed" });
+
+    food.claimedBy = userId;
+    await food.save();
+
+    res.json({ message: "Food claimed successfully", food });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};

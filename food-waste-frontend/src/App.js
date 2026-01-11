@@ -4,7 +4,10 @@ import Main from "./components/Main";
 import ListsPage from "./components/ListsPage";
 import Navbar from "./components/Navbar";
 import GroupsPage from "./components/GroupsPage";
+import GroupPantry from "./components/GroupPantry";
 import {Box} from "@mui/material"; 
+import Footer from "./components/Footer";
+import {Routes, Route, Navigate} from "react-router-dom";
 function App() {
  const [user, setUser] = useState(() => {
   const savedUser = localStorage.getItem("user");
@@ -37,21 +40,34 @@ function App() {
   }
   return (
   <>
-    {/* The Navbar is always here as long as a user is logged in */}
     <Navbar 
-      setView={setView} 
+      setView={setView} // Keep this for now if your Navbar still uses it
       onLogout={handleLogout} 
       userName={user.name} 
     />
 
     <Box sx={{ mt: 2 }}>
-      {view === "dashboard" && <Main user={user} />}
-      {view === "lists" && <ListsPage user={user} setView={setView} />}
-      {view === "groups" && <GroupsPage user={user} />}
+      <Routes>
+        {/* Default Landing Page */}
+        <Route path="/" element={<Main user={user} />} />
+        
+        {/* Lists Page */}
+        <Route path="/lists" element={<ListsPage user={user} />} />
+        
+        {/* Groups Page */}
+        <Route path="/groups" element={<GroupsPage user={user} />} />
+        
+        {/* THE NEW GROUP PANTRY ROUTE */}
+        <Route path="/groups/:groupId" element={<GroupPantry user={user} />} />
+        
+        {/* Catch-all: Redirect back to home if path doesn't exist */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
     </Box>
-  
+    <Footer />
   </>
 );
+
 }
 
 export default App;

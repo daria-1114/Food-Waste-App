@@ -3,9 +3,11 @@ import { Box, Typography, Button, Grid, Card, CardContent, TextField, Dialog, Di
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { createGroup, getGroups, deleteGroup, findUserByEmail, addUserToGroup } from "../api"; // You'll need to add these to api.js
+import { createGroup, getGroups, deleteGroup, findUserByEmail, addUserToGroup } from "../api"; 
+import {useNavigate} from "react-router-dom";
 
 const GroupsPage = ({ user }) => {
+  const navigate = useNavigate();
   const [groups, setGroups] = useState([]);
   const [open, setOpen] = useState(false);
   const [newGroupName, setNewGroupName] = useState("");
@@ -79,31 +81,56 @@ const handleInvite = async (groupID) => {
       </Box>
 
       <Grid container spacing={3}>
-        {groups.map((group) => (
-          <Grid item xs={12} sm={6} md={4} key={group.groupID}>
-            <Card elevation={3} sx={{ borderRadius: 3 }}>
-              <CardContent>
-                <Typography variant="h6" gutterBottom>{group.name}</Typography>
-                <Chip 
-                  label={`Preference: ${group.label || 'None'}`} 
-                  color="secondary" 
-                  size="small" 
-                  sx={{ mb: 2 }} 
-                />
-                <Typography variant="body2" color="textSecondary" mb={2}>
-                  Members: {group.members?.length || 1}
-                </Typography>
-                <Button fullWidth variant="outlined" startIcon={<PersonAddIcon />} size="small" onClick={()=>handleInvite(group.groupID)}>
-                  Invite Friend
-                </Button>
-                <IconButton onClick={() => handleDelete(group.groupID)} color="error">
-                <DeleteIcon />
-                </IconButton>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-      </Grid>
+  {groups.map((group) => (
+    /* 1. Ensure the key is consistent. Usually 'id' is safest */
+    <Grid item xs={12} sm={6} md={4} key={group.groupID}> 
+      <Card 
+        elevation={3} 
+        sx={{ borderRadius: 3, cursor: 'pointer' }} 
+        /* 2. Using backticks for the dynamic URL */
+        onClick={() => navigate(`/groups/${group.groupID}`)} 
+      >
+        <CardContent>
+          <Typography variant="h6" gutterBottom>{group.name}</Typography>
+          <Chip 
+            label={`Preference: ${group.label || 'None'}`} 
+            color="secondary" 
+            size="small" 
+            sx={{ mb: 2 }} 
+          />
+          <Typography variant="body2" color="textSecondary" mb={2}>
+            Members: {group.members?.length || 1}
+          </Typography>
+
+          {/* 3. Wrap buttons with e.stopPropagation() so clicking them 
+                 doesn't trigger the Card's onClick (navigation) */}
+          <Button 
+            fullWidth 
+            variant="outlined" 
+            startIcon={<PersonAddIcon />} 
+            size="small" 
+            onClick={(e) => {
+              e.stopPropagation(); 
+              handleInvite(group.groupID); // Standardize to .id
+            }}
+          >
+            Invite Friend
+          </Button>
+
+          <IconButton 
+            onClick={(e) => {
+              e.stopPropagation(); 
+              handleDelete(group.id); // Standardize to .id
+            }} 
+            color="error"
+          >
+            <DeleteIcon />
+          </IconButton>
+        </CardContent>
+      </Card>
+    </Grid>
+  ))}
+</Grid>
 
       {/* MODAL FOR NEW GROUP */}
       <Dialog open={open} onClose={() => setOpen(false)}>

@@ -1,6 +1,7 @@
 import User from "../models/user.js";
 import FriendGroup from "../models/friendGroup.js";
-import GroupMember from "../models/groupMember.js"
+import GroupMember from "../models/groupMember.js";
+import FoodProduct from "../models/foodProduct.js";
 // export const createGroup = async (req, res) => {
 //   try {
 //     const { name, label } = req.body;
@@ -121,6 +122,59 @@ export const deleteGroup = async (req, res) => {
       res.status(404).json({ error: "Group not found" });
     }
   } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+//get list of shared foods of users of a specific group
+
+export const getGroupSharedFoods = async (req, res) => {
+  try {
+    const { groupId } = req.params;
+    console.log("--- DEBUG START ---");
+    console.log("Target Group ID:", groupId);
+
+    // 1. Get all user IDs in this group
+    const members = await GroupMember.findAll({
+      // Try GroupId (capital) first. If it fails, try groupId (lowercase)
+      where: { GroupId: groupId }, 
+      attributes: ['UserId']
+    });
+
+    console.log("Members found:", members.length);
+
+    if (members.length === 0) {
+      console.log("No members found for this group ID.");
+      return res.json([]);
+    }
+
+    const userIds = members.map(m => m.UserId);
+    console.log("Member User IDs:", userIds);
+
+    // 2. Get the shared foods 
+    const sharedFoods = await FoodProduct.findAll({
+      where: {
+        UserId: userIds,
+        shared: true  // We use 'shared' as we confirmed earlier
+      },
+      include: [{ 
+        model: User, 
+        as: 'owner', 
+        attributes: ['name'] 
+      },
+    { model: User, 
+      as: 'claimer', 
+      attributes: ['name'], 
+      foreignKey: 'claimedBy' 
+    }]
+    });
+
+    console.log("Foods found:", sharedFoods.length);
+    console.log("--- DEBUG END ---");
+
+    res.json(sharedFoods);
+  } catch (err) {
+    console.error("Backend Error Details:", err);
     res.status(500).json({ error: err.message });
   }
 };

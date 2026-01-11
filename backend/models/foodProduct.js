@@ -28,6 +28,11 @@ const Food = db.define("FoodProduct",{
     UserId:{
         type: DataTypes.INTEGER,
         allowNull:false
+    },
+    claimedBy:{
+        type:DataTypes.INTEGER,
+        allowNull:true,
+        defaultValue: null
     }
 });
 export default Food;
