@@ -7,7 +7,7 @@ const Member = db.define("GroupMember",{
         primaryKey: true,
         autoIncrement: true,
     },
-    // Add these so you can use them in your controllers!
+ 
     UserId: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -18,7 +18,7 @@ const Member = db.define("GroupMember",{
     },
     role: {
         type: DataTypes.STRING,
-        defaultValue: "member" // Useful for "admin" vs "member" later
+        defaultValue: "member" 
     }
 });
 

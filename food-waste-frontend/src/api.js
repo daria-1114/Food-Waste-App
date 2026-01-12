@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000/api", // make sure your backend runs here
+  baseURL: "http://localhost:8000/api", 
 });
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");
@@ -22,7 +22,7 @@ export const toggleAvailability = (foodId) => API.patch(`/foods/${foodId}/toggle
 export const unshareFood = (id) => API.post(`/foods/${id}/unshare`);
 export const deleteFood = (foodId) => API.delete(`/foods/${foodId}`);
 export const claimFood = (id) => API.post( `/foods/${id}/claim`);
-// Groups (if you want later)
+// Groups 
 export const createGroup = (data) => API.post(`/groups`, data);;
 export const getGroups =() => API.get(`/groups`);
 export const getGroupMembers = (groupId) =>

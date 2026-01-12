@@ -6,17 +6,17 @@ export const protect = async (req, res, next) => {
   let token=req.headers.authorization;
   
   if (token && token.startsWith("Bearer ")) {
-    token = token.split(" ")[1]; // This should leave ONLY the random characters
+    token = token.split(" ")[1]; 
   }
 
-  console.log("DEBUG: Raw Token being verified ->", token); // <--- LOOK AT THIS IN TERMINAL
+  console.log("DEBUG: Raw Token being verified ->", token);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
     req.user = decoded; 
     next();
   } catch (err) {
-    console.error("JWT Error:", err.message); // This is where "jwt malformed" comes from
+    console.error("JWT Error:", err.message); 
     res.status(401).json({ error: "Invalid token" });
   }
 };

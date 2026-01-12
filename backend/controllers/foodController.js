@@ -149,7 +149,7 @@ export const toggleFoodShare = async (req, res) => {
 export const claimFood = async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id; // The person currently logged in
+    const userId = req.user.id; 
 
     const food = await FoodProduct.findByPk(id);
     if (!food) return res.status(404).json({ error: "Food not found" });

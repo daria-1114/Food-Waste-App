@@ -19,7 +19,7 @@ const GroupsPage = ({ user }) => {
 
   const fetchGroups = async () => {
     try {
-      const res = await getGroups(); // Backend needs to return groups for this user
+      const res = await getGroups(); 
       setGroups(res.data);
     } catch (err) { console.error(err); }
   };
@@ -34,7 +34,7 @@ const GroupsPage = ({ user }) => {
     } catch (err) { console.error(err); }
   };
 const handleDelete = async (id) => {
-  console.log("Button clicked! Group ID to delete:", id); // Check your console!
+  console.log("Button clicked! Group ID to delete:", id); 
   
   if (!id) {
     alert("Error: This group doesn't have a valid ID in the database.");
@@ -82,12 +82,10 @@ const handleInvite = async (groupID) => {
 
       <Grid container spacing={3}>
   {groups.map((group) => (
-    /* 1. Ensure the key is consistent. Usually 'id' is safest */
     <Grid item xs={12} sm={6} md={4} key={group.groupID}> 
       <Card 
         elevation={3} 
         sx={{ borderRadius: 3, cursor: 'pointer' }} 
-        /* 2. Using backticks for the dynamic URL */
         onClick={() => navigate(`/groups/${group.groupID}`)} 
       >
         <CardContent>
@@ -102,8 +100,7 @@ const handleInvite = async (groupID) => {
             Members: {group.members?.length || 1}
           </Typography>
 
-          {/* 3. Wrap buttons with e.stopPropagation() so clicking them 
-                 doesn't trigger the Card's onClick (navigation) */}
+          
           <Button 
             fullWidth 
             variant="outlined" 
@@ -111,7 +108,7 @@ const handleInvite = async (groupID) => {
             size="small" 
             onClick={(e) => {
               e.stopPropagation(); 
-              handleInvite(group.groupID); // Standardize to .id
+              handleInvite(group.groupID); 
             }}
           >
             Invite Friend
@@ -120,7 +117,7 @@ const handleInvite = async (groupID) => {
           <IconButton 
             onClick={(e) => {
               e.stopPropagation(); 
-              handleDelete(group.id); // Standardize to .id
+              handleDelete(group.id); 
             }} 
             color="error"
           >

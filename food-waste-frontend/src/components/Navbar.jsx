@@ -1,9 +1,9 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box } from "@mui/material";
-import KitchenIcon from "@mui/icons-material/Kitchen"; // Fridge icon
-import ListAltIcon from "@mui/icons-material/ListAlt"; // Lists icon
-import GroupIcon from "@mui/icons-material/Group"; // Groups icon
+import KitchenIcon from "@mui/icons-material/Kitchen"; 
+import ListAltIcon from "@mui/icons-material/ListAlt"; 
+import GroupIcon from "@mui/icons-material/Group"; 
 import LogoutIcon from "@mui/icons-material/Logout";
 
 const Navbar = ({ onLogout, userName }) => {

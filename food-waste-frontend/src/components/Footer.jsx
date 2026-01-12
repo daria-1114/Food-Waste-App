@@ -22,7 +22,6 @@ const Footer = () => {
         </Typography>
         
         <Box sx={{ mt: 1 }}>
-          {/* Instagram Link */}
           <IconButton 
             component="a" 
             href="https://instagram.com" 
@@ -31,8 +30,6 @@ const Footer = () => {
           >
             <InstagramIcon fontSize="large" />
           </IconButton>
-
-          {/* Facebook Link */}
           <IconButton 
             component="a" 
             href="https://facebook.com" 

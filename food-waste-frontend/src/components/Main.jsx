@@ -37,7 +37,6 @@ const Main = ({ user, onLogout, goToLists }) => {
     if (diffDays <= 3) return "warning";
     return "safe";
   };
-  /* ---------------- FETCH ---------------- */
   const fetchFoods = useCallback(async () => {
     const token = localStorage.getItem("token");
     if (!user?.id || !token) return;
@@ -45,7 +44,6 @@ const Main = ({ user, onLogout, goToLists }) => {
       const res = await getFoods();
       const allFoods = Array.isArray(res.data) ? res.data : [];
 
-      // Ensure we compare IDs correctly (handling string vs number)
       setFoods(allFoods.filter((f) => String(f.UserId) === String(user.id)));
       setSharedFoods(allFoods.filter((f) => f.shared === true));
     } catch (err) {

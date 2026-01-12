@@ -2,20 +2,7 @@ import User from "../models/user.js";
 import FriendGroup from "../models/friendGroup.js";
 import GroupMember from "../models/groupMember.js";
 import FoodProduct from "../models/foodProduct.js";
-// export const createGroup = async (req, res) => {
-//   try {
-//     const { name, label } = req.body;
-//     const group = await FriendGroup.create({ name, label });
-//     res.status(201).json(group);
-//     await GroupMember.create({
-//       UserId: req.user.id, // Comes from 'protect' middleware
-//       GroupId: group.id
-//     });
-//     res.status(201).json(group);
-//   } catch (err) {
-//     res.status(400).json({ error: err.message });
-//   }
-// };
+
 export const createGroup = async (req, res) => {
   try {
     const { name, label } = req.body;
@@ -41,8 +28,6 @@ export const createGroup = async (req, res) => {
 export const addUserToGroup = async (req, res) => {
   try {
     const { groupId, userId } = req.params;
-
-    // 1. Check if user is already in the group
     const existingMember = await GroupMember.findOne({
       where: { GroupId: groupId, UserId: userId }
     });
@@ -51,7 +36,6 @@ export const addUserToGroup = async (req, res) => {
       return res.status(400).json({ error: "User is already a member of this group" });
     }
 
-    // 2. Add the user to the group
     await GroupMember.create({
       GroupId: groupId,
       UserId: userId
@@ -66,20 +50,18 @@ export const addUserToGroup = async (req, res) => {
 
 export const getGroups = async (req, res) => {
   try {
-    // 1. Find the logged-in user
     const user = await User.findByPk(req.user.id, {
       include: [
         {
           model: FriendGroup,
-          as: "groups", // This must match the 'as' in your initDB associations
-          include: [{ model: User, as: "members" }] // This gets member names too
+          as: "groups",
+          include: [{ model: User, as: "members" }] 
         }
       ]
     });
 
     if (!user) return res.status(404).json({ error: "User not found" });
 
-    // 2. Return the array of groups the user is part of
     res.json(user.groups || []); 
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -89,12 +71,12 @@ export const getGroupMembers = async (req, res) => {
   try {
     const { groupId } = req.params;
 
-    // Find the group and include its members (Users)
+    
     const group = await FriendGroup.findByPk(groupId, {
       include: [{
         model: User,
-        as: "members", // Must match the 'as' in your initDB.js associations
-        attributes: ["id", "name", "email"] // Don't send passwords!
+        as: "members", 
+        attributes: ["id", "name", "email"] 
       }]
     });
 
@@ -113,7 +95,7 @@ export const deleteGroup = async (req, res) => {
     const { groupId } = req.params;
 
     const deleted = await FriendGroup.destroy({
-      where: { groupID: groupId } // Ensure this matches your PK name (id or groupId)
+      where: { groupID: groupId } 
     });
 
     if (deleted) {
@@ -126,7 +108,7 @@ export const deleteGroup = async (req, res) => {
   }
 };
 
-//get list of shared foods of users of a specific group
+
 
 export const getGroupSharedFoods = async (req, res) => {
   try {
@@ -134,9 +116,9 @@ export const getGroupSharedFoods = async (req, res) => {
     console.log("--- DEBUG START ---");
     console.log("Target Group ID:", groupId);
 
-    // 1. Get all user IDs in this group
+
     const members = await GroupMember.findAll({
-      // Try GroupId (capital) first. If it fails, try groupId (lowercase)
+     
       where: { GroupId: groupId }, 
       attributes: ['UserId']
     });
@@ -151,11 +133,11 @@ export const getGroupSharedFoods = async (req, res) => {
     const userIds = members.map(m => m.UserId);
     console.log("Member User IDs:", userIds);
 
-    // 2. Get the shared foods 
+
     const sharedFoods = await FoodProduct.findAll({
       where: {
         UserId: userIds,
-        shared: true  // We use 'shared' as we confirmed earlier
+        shared: true  
       },
       include: [{ 
         model: User, 
