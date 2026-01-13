@@ -28,8 +28,10 @@ async function startServer() {
   try {
     await initDB();
 
-    app.listen(PORT, () => {
-      console.log(`Server is running on port ${PORT}`);
+    const port = process.env.PORT || 8080; 
+    
+    app.listen(port, "0.0.0.0", () => {
+      console.log(`Server is running on port ${port}`);
     });
   } catch (err) {
     console.error("Failed to start server:", err);
