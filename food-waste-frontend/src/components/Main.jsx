@@ -60,7 +60,7 @@ const Main = ({ user, onLogout, goToLists }) => {
     fetchFoods();
   }, [fetchFoods]);
 
- // 2. Expiry Alerts (Awareness Feature)
+ // 2. NOTIFICATION ALERT EXPIRED FOODS
 const hasAlertedThisSession = useRef(false); 
 
 useEffect(() => {
@@ -91,7 +91,6 @@ useEffect(() => {
     setExpiration("");
 
     // 3. FORCE A RE-FETCH
-    // This is the most important part to make it appear in the list!
     await fetchFoods(); 
     
   } catch (err) {

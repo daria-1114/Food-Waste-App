@@ -1,7 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:8000/api", 
+  baseURL: window.location.hostname === "localhost" 
+    ? "http://localhost:8000/api" 
+    : "/api",
+  withCredentials: true
 });
 API.interceptors.request.use((req) => {
   const token = localStorage.getItem("token");

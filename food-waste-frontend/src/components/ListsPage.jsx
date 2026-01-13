@@ -5,14 +5,15 @@ import { getFoods } from "../api";
 
 const ListsPage = ({ user, goBack }) => {
   const [groupedFoods, setGroupedFoods] = useState({});
-
+  
+  
   useEffect(() => {
     const fetchFoods = async () => {
       try {
         const res = await getFoods();
         const myItems = res.data.filter(f => String(f.UserId) === String(user.id));
         
-        // Organize by category
+        // ORGANIZE FOODS BY CATEGORY 
         const groups = myItems.reduce((acc, food) => {
           const cat = food.category || "Uncategorized";
           if (!acc[cat]) acc[cat] = [];

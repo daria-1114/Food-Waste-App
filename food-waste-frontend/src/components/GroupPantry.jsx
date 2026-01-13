@@ -15,6 +15,7 @@ const GroupPantry = () => {
     console.error("Error fetching pantry:", err);
   }
 };
+//USERS IN GROUPS CAN SEE OTHER USER'S SHARED FOODS 
   useEffect(() => {
     const loadSharedFoods = async () => {
       try {
@@ -26,6 +27,8 @@ const GroupPantry = () => {
     };
     loadSharedFoods();
   }, [groupId]);
+
+  //CLAIMED FOODS
 const handleClaim = async (foodId) => {
     try {
       await claimFood(foodId);

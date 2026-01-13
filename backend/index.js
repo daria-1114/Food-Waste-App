@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-const PORT = 8000;
+const PORT = process.env.PORT;
 //import db from './config/database.js';
 import userRoutes from "./routes/userRoutes.js";
 import foodRoutes from "./routes/foodRoutes.js";
@@ -10,10 +10,11 @@ import initDB from './config/initDatabase.js';
 
 const app = express();
 app.use(cors({
-  origin:"http://localhost:3000",
+  origin:'https://proud-intuition-production-ffd5.up.railway.app',
   credentials:true,
   allowedHeaders:['Content-type', 'Authorization']
 }));
+app.use(express.static("build"));
 app.use(express.json());
 
 
